@@ -1,22 +1,27 @@
 resource "aws_key_pair" "deployer" {
-  key_name   = "terra-key-ec2"
+  key_name   = "${var.env}-terra-key-ec2"
   public_key =  file("terra-key-ec2.pub")
+
+  tags = {
+    env = var.env
+  }
 }
 
 resource "aws_default_vpc" "default" {
   tags = {
-    Name = "Default VPC"
+    Name = "${var.env}-Default VPC"
   }
 }
 
 resource "aws_security_group" "example_tls" {
 
-    name = "automate-sg"
+    name = "${var.env}-automate-sg"
     description = "Allow traffic for terraform"
     vpc_id = aws_default_vpc.default.id
 
     tags = {
     Name = "allow_tls"
+    env = var.env
   }
 
     ingress {
@@ -46,7 +51,6 @@ resource "aws_instance" "from_terraform" {
     for_each = tomap({
         test_nginx = "t3.micro"
         nginx_server = "t3.micro"
-        sandbox = "t2.large"
     })
 
     depends_on = [ aws_security_group.example_tls, aws_key_pair.deployer ]
@@ -62,6 +66,7 @@ resource "aws_instance" "from_terraform" {
     }
     tags = {
         Name = each.key
+        env = var.env
     }
 }
 
