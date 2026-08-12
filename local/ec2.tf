@@ -46,7 +46,7 @@ resource "aws_instance" "from_terraform" {
     for_each = tomap({
         test_nginx = "t3.micro"
         nginx_server = "t3.micro"
-        sandbox = "t2.large"
+        sandbox = "t2.micro"
     })
 
     depends_on = [ aws_security_group.example_tls, aws_key_pair.deployer ]
