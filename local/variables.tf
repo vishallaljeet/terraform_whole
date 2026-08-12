@@ -14,6 +14,6 @@ variable "ec2-ami-tyoe" {
 }
 
 variable "env" {
-  default = "dev"
+  default = "prod"
   type = string
 }
